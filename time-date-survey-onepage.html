@@ -1,9 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Gathering Calendar｜時間日期調查</title>
-<style>
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>活動日期調查｜Gathering Calendar</title><style>
 :root{--ink:#26372d;--muted:#78857d;--line:#e4eae5;--green:#3d7955;--pale:#e8f2eb;--bg:#fafcf9}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,"Noto Sans TC",sans-serif}
 .wrap{max-width:920px;width:calc(100% - 32px);margin:auto}.top{display:flex;justify-content:space-between;align-items:center;padding:22px 0;border-bottom:1px solid var(--line)}
@@ -24,99 +19,27 @@ label{display:block;font-size:13px;font-weight:700;margin:15px 0 7px}input,texta
 table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:11px 8px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--muted)}
 footer{padding:25px 0;color:var(--muted);font-size:11px}
 @media(max-width:600px){.card{padding:15px}.day{min-height:62px;padding:6px 4px}.day.selected{padding:5px 3px}.calendar{gap:4px}.sub{font-size:9px}.stats{gap:6px}.stat{padding:10px}.stat strong{font-size:21px}.rank{grid-template-columns:85px 1fr 38px;gap:6px}}
-</style></head>
-<body><main class="wrap">
-<header class="top"><div class="brand">GATHERING CALENDAR<small>時間日期調查平台</small></div><nav><button class="tab active" id="guestTab">賓客填寫</button><button class="tab" id="adminTab">主辦人統計</button></nav></header>
-<section class="hero"><div class="eyebrow">FIND A DATE. GATHER EVERYONE.</div><h1 id="mainTitle">一起找出最適合相聚的日子</h1><p id="mainDesc">請填寫姓名，並勾選您可以出席的日期。可複選，送出後即可完成回覆。</p></section>
+.admin-link{display:inline-flex;align-items:center;gap:6px;text-decoration:none;background:#eef3ef;color:#26372d;border:1px solid #dbe7de;border-radius:10px;padding:11px 14px;font-size:13px;font-weight:700;white-space:nowrap}.admin-link:hover{background:#e0ede3}.ranking-header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.ranking-note{font-size:12px;color:var(--muted)}.rank-number{font-weight:700;color:var(--green)}@media(max-width:600px){.brand{font-size:12px}.brand small{font-size:9px}.admin-link{font-size:12px;padding:9px 10px}}
+/* 送出成功提示視窗 */
+.success-overlay{position:fixed;inset:0;z-index:9999;background:rgba(22,42,30,.48);display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .22s ease}
+.success-dialog{width:min(100%,370px);background:#fff;border-radius:24px;padding:32px 25px 25px;text-align:center;box-shadow:0 22px 70px rgba(20,55,33,.22);animation:popIn .32s cubic-bezier(.2,.8,.2,1)}
+.success-icon{width:84px;height:84px;margin:0 auto 18px;border-radius:50%;background:#e6f4e9;display:flex;align-items:center;justify-content:center}
+.success-icon svg{width:55px;height:55px;fill:none;stroke:#348957;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:90;stroke-dashoffset:90;animation:drawCheck .55s .2s ease forwards}
+.success-dialog h2{margin:0 0 9px;font-size:25px;color:#26372d}.success-dialog p{margin:0 0 22px;font-size:14px}.success-dialog .btn{width:100%;font-size:15px}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}@keyframes popIn{from{opacity:0;transform:translateY(15px) scale(.94)}to{opacity:1;transform:translateY(0) scale(1)}}@keyframes drawCheck{to{stroke-dashoffset:0}}
+@media(prefers-reduced-motion:reduce){.success-overlay,.success-dialog,.success-icon svg{animation:none}.success-icon svg{stroke-dashoffset:0}}
+.event-select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fff;font:inherit;color:var(--ink)}.event-tools{margin-top:24px;padding:18px;border:1px solid var(--line);border-radius:14px;background:#f8fbf8}.event-tools h3{margin:0 0 8px}
 
-<section id="guestView" class="card">
-<h2 style="margin-top:0">時間日期調查</h2>
-<label for="guestName">您的姓名</label><input id="guestName" maxlength="60" placeholder="請輸入姓名">
-<div class="calhead"><button class="btn secondary" id="prev">← 上個月</button><div class="month" id="monthLabel"></div><button class="btn secondary" id="next">下個月 →</button></div>
-<div class="calendar" id="calendar"></div>
-<div class="row between" style="margin-top:15px"><span class="muted" id="selectedCount">已選擇 0 個日期</span><button class="btn secondary" id="clear">清除選擇</button></div>
-<div id="selectedDates" style="margin-top:8px"></div>
-<button class="btn" id="submit" style="width:100%;margin-top:18px">確認並送出</button><div id="guestMessage"></div>
-<p class="muted">送出後可再次填寫相同姓名以更新日期。請使用相同裝置及瀏覽器。</p>
-</section>
+select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:white;font:inherit} .action-row{display:flex;gap:9px;flex-wrap:wrap} .action-row button{flex:1} .urlbox{overflow-wrap:anywhere;background:#f3f7f3;border-radius:9px;padding:12px;font-size:12px} .busy{opacity:.6;pointer-events:none} </style></head><body><main class="wrap"><header class="top"><div class="brand">GATHERING CALENDAR<small>時間日期調查平台</small></div><a class="admin-link" href="gathering-admin.html" aria-label="前往主辦人管理中心">⚙ 主辦人管理</a></header><section class="hero"><div class="eyebrow">FIND A DATE. GATHER EVERYONE.</div><h1 id="mainTitle">正在載入活動…</h1><p id="mainDesc">請填寫姓名並選擇您可以出席的日期。</p></section><section class="card" id="guestView"><label for="guestName">您的姓名</label><input id="guestName" maxlength="60" placeholder="請輸入姓名"><div class="calhead"><button class="btn secondary" id="prev">← 上個月</button><div class="month" id="monthLabel"></div><button class="btn secondary" id="next">下個月 →</button></div><div class="calendar" id="calendar"></div><div class="row between" style="margin-top:15px"><span class="muted" id="selectedCount">已選擇 0 個日期</span><button class="btn secondary" id="clear">清除選擇</button></div><div id="selectedDates"></div><button class="btn" id="submit" style="width:100%;margin-top:18px" disabled>確認並送出</button><div id="guestMessage"></div><p class="muted">同一活動使用相同姓名再次填寫會更新原本回覆。</p></section><section class="card" id="popularCard"><div class="ranking-header"><h2 style="margin:0">最熱門日期 TOP 10</h2><button class="btn secondary" id="refreshRanking" type="button">↻ 更新排名</button></div><p class="ranking-note">依本活動目前已回覆賓客的可出席人數排序，與其他活動分開統計。</p><div id="rankingStatus" class="muted" role="status">正在讀取排名…</div><div id="guestRanking" aria-live="polite"></div></section><footer>GATHERING CALENDAR · 讓每一次相聚，都找到最好的時間。</footer></main><div id="successOverlay" class="success-overlay hidden"><div class="success-dialog" role="dialog" aria-modal="true" aria-labelledby="successTitle"><div class="success-icon"><svg viewBox="0 0 60 60"><path d="M12 31 L25 43 L49 17"/></svg></div><h2 id="successTitle">填寫完成！</h2><p id="successDescription"></p><button class="btn" id="successClose">完成</button></div></div><script>const API_URL='https://script.google.com/macros/s/AKfycbyyTYeja0tIHyB2fL0lWIbKRXzZcPYqiL95C6FFS1axVMJN6W9RCrcSRUhe4yfaiJIY/exec';const BASE_URL='https://caslynryu7725.github.io/gathering-calendar/time-date-survey-onepage.html';const $=id=>document.getElementById(id);const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));const pad=n=>String(n).padStart(2,'0');const key=(y,m,d)=>`${y}-${pad(m+1)}-${pad(d)}`;const fmt=d=>{const x=new Date(d+'T12:00:00');return `${x.getFullYear()}/${x.getMonth()+1}/${x.getDate()}（${'日一二三四五六'[x.getDay()]}）`};
+function getState(eventId){return new Promise((resolve,reject)=>{const cb='gcCallback'+Date.now()+Math.floor(Math.random()*100000);const s=document.createElement('script');let done=false;const timer=setTimeout(()=>finish(new Error('讀取逾時，請檢查 Apps Script 部署權限')),18000);function finish(err,data){if(done)return;done=true;clearTimeout(timer);delete window[cb];s.remove();err?reject(err):resolve(data)}window[cb]=data=>finish(null,data);s.onerror=()=>finish(new Error('無法連線到資料服務'));s.src=API_URL+'?callback='+cb+'&eventId='+encodeURIComponent(eventId||'')+'&t='+Date.now();document.head.appendChild(s)})}
+async function post(action,payload){await fetch(API_URL,{method:'POST',mode:'no-cors',body:new URLSearchParams({action,payload:JSON.stringify(payload)})});await new Promise(r=>setTimeout(r,1100))}
 
-<section id="adminView" class="card hidden">
-<div class="row between"><h2 style="margin:0">主辦人統計</h2><button class="btn secondary" id="refresh">重新整理統計</button><button class="btn secondary" id="export">匯出 CSV</button></div>
-<p>可在此設定活動日期範圍。統計資料由 Google Sheets 共用儲存；點選「重新整理統計」可取得最新回覆。</p>
-<label for="adminPin">管理密碼（設定及刪除時使用）</label><input id="adminPin" type="password" placeholder="請輸入管理密碼">
-<div class="row">
-<div style="flex:1;min-width:140px"><label>活動名稱</label><input id="eventTitle" value="時間日期調查"></div>
-<div style="flex:1;min-width:140px"><label>開始日期</label><input type="date" id="startDate"></div>
-<div style="flex:1;min-width:140px"><label>結束日期</label><input type="date" id="endDate"></div>
-</div>
-<button class="btn" id="saveSettings" style="margin-top:12px">儲存活動設定</button><div id="adminMessage"></div>
-<div class="stats" style="margin-top:22px"><div class="stat"><span>已回覆人數</span><strong id="totalPeople">0</strong></div><div class="stat"><span>可選日期</span><strong id="totalDays">0</strong></div><div class="stat"><span>最高出席人數</span><strong id="maxCount">0</strong></div></div>
-<h3 style="margin:24px 0 12px">可出席人數排名</h3><div id="ranking"></div>
-<h3 style="margin:26px 0 10px">各日期出席名單</h3><div style="overflow-x:auto"><table><thead><tr><th>日期／星期</th><th>人數</th><th>出席者</th></tr></thead><tbody id="attendeeTable"></tbody></table></div>
-<h3 style="margin:26px 0 10px">已填寫名單</h3><div style="overflow-x:auto"><table><thead><tr><th>姓名</th><th>選擇日期</th><th>操作</th></tr></thead><tbody id="peopleTable"></tbody></table></div>
-<p class="muted">提醒：賓客姓名及可出席日期可透過公開資料介面讀取，請勿填寫敏感資訊。</p>
-</section>
-<footer>GATHERING CALENDAR · 讓每一次相聚，都找到最好的時間。</footer>
-</main>
-<script>
-// 先將 Google Apps Script 部署網址貼到這裡（以 /exec 結尾）
-const API_URL = 'https://script.google.com/macros/s/AKfycbyyTYeja0tIHyB2fL0lWIbKRXzZcPYqiL95C6FFS1axVMJN6W9RCrcSRUhe4yfaiJIY/exec';
-const $=id=>document.getElementById(id),pad=n=>String(n).padStart(2,'0');
-const key=(y,m,d)=>`${y}-${pad(m+1)}-${pad(d)}`;
-const fmt=d=>{let x=new Date(d+'T12:00:00');return `${x.getFullYear()}/${x.getMonth()+1}/${x.getDate()}（${'日一二三四五六'[x.getDay()]}）`};
-const escapeHtml=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let now=new Date(),viewYear=now.getFullYear(),viewMonth=now.getMonth(),selected=new Set(),people=[];
-let settings={title:'時間日期調查',start:key(now.getFullYear(),now.getMonth(),1),end:key(now.getFullYear(),now.getMonth(),new Date(now.getFullYear(),now.getMonth()+1,0).getDate())};
-const configured=()=>API_URL.startsWith('https://script.google.com/macros/s/')&&API_URL.endsWith('/exec');
-function jsonp(){return new Promise((resolve,reject)=>{
- if(!configured()){reject(new Error('尚未設定 Apps Script 網址'));return;}
- const callback='gcCallback'+Date.now()+Math.floor(Math.random()*100000),script=document.createElement('script');
- const timeout=setTimeout(()=>finish(new Error('讀取逾時，請檢查 Apps Script 部署權限')),15000);
- function finish(err,data){clearTimeout(timeout);delete window[callback];script.remove();err?reject(err):resolve(data)}
- window[callback]=data=>finish(null,data);script.onerror=()=>finish(new Error('無法連線到資料服務'));
- script.src=API_URL+'?callback='+callback+'&t='+Date.now();document.head.appendChild(script);
- });}
-async function send(action,payload){
- if(!configured())throw new Error('尚未設定 Apps Script 網址');
- // 使用表單格式避免 GitHub Pages 到 Apps Script 的 CORS preflight 問題
- const body=new URLSearchParams({action,payload:JSON.stringify(payload)});
- await fetch(API_URL,{method:'POST',mode:'no-cors',body});
- // no-cors 無法取得伺服器回應；重新讀取並核對操作是否生效
- await new Promise(r=>setTimeout(r,900));
- return refresh();
-}
-function renderCalendar(){
- $('monthLabel').textContent=`${viewYear} 年 ${viewMonth+1} 月`;
- let html=['日','一','二','三','四','五','六'].map(x=>`<div class="weekday">週${x}</div>`).join('');
- let offset=new Date(viewYear,viewMonth,1).getDay(),count=new Date(viewYear,viewMonth+1,0).getDate();
- for(let i=0;i<offset;i++)html+='<div></div>';
- for(let d=1;d<=count;d++){let k=key(viewYear,viewMonth,d),ok=k>=settings.start&&k<=settings.end,yes=selected.has(k);
- html+=`<button class="day ${yes?'selected':''}" data-date="${k}" ${ok?'':'disabled'}><span class="num">${d}</span><span class="sub">星期${'日一二三四五六'[new Date(viewYear,viewMonth,d).getDay()]}</span><span class="tick">${yes?'✓':''}</span></button>`}
- $('calendar').innerHTML=html;
- $('calendar').querySelectorAll('[data-date]').forEach(b=>b.onclick=()=>{let d=b.dataset.date;selected.has(d)?selected.delete(d):selected.add(d);renderCalendar();renderSelected()});
-}
-function renderSelected(){$('selectedCount').textContent=`已選擇 ${selected.size} 個日期`;$('selectedDates').innerHTML=[...selected].sort().map(d=>`<span class="pill">${fmt(d)}</span>`).join('')}
-function loadSettings(){$('eventTitle').value=settings.title;$('startDate').value=settings.start;$('endDate').value=settings.end;$('mainTitle').textContent=settings.title;}
-function renderAdmin(){
- const counts={},start=new Date(settings.start+'T12:00:00'),end=new Date(settings.end+'T12:00:00');
- for(let d=new Date(start);d<=end;d.setDate(d.getDate()+1)){let k=key(d.getFullYear(),d.getMonth(),d.getDate());counts[k]=people.filter(p=>p.dates.includes(k)).length}
- const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]),max=sorted.length?sorted[0][1]:0;
- $('totalPeople').textContent=people.length;$('totalDays').textContent=Object.keys(counts).length;$('maxCount').textContent=max;
- $('ranking').innerHTML=sorted.slice(0,10).map(([d,n],i)=>`<div class="rank"><div>${i===0&&n>0?'<b>★ 最熱門</b> '+fmt(d):fmt(d)}</div><div class="track"><div class="fill ${i===0?'best':''}" style="width:${max?100*n/Math.max(people.length,1):0}%"></div></div><b>${n} 人</b></div>`).join('')||'<p class="muted">尚無資料</p>';
- $('attendeeTable').innerHTML=Object.entries(counts).map(([d,n])=>{let names=people.filter(p=>p.dates.includes(d)).map(p=>escapeHtml(p.name));return `<tr><td>${fmt(d)}</td><td><b>${n}</b></td><td>${names.join('、')||'—'}</td></tr>`}).join('');
- $('peopleTable').innerHTML=people.map(p=>`<tr><td>${escapeHtml(p.name)}</td><td>${p.dates.slice().sort().map(fmt).join('、')||'—'}</td><td><button class="btn secondary" data-del="${encodeURIComponent(p.name)}">刪除</button></td></tr>`).join('')||'<tr><td colspan="3">尚無填寫紀錄</td></tr>';
- $('peopleTable').querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{const name=decodeURIComponent(b.dataset.del),pin=$('adminPin').value;if(!pin){alert('請先輸入管理密碼');return}if(!confirm('確定刪除此筆回覆？'))return;try{await send('delete',{name,pin});if(people.some(p=>p.name===name))throw Error('刪除未成功，請確認密碼');$('adminMessage').innerHTML='<div class="notice">已刪除回覆</div>'}catch(e){alert(e.message)}});
-}
-async function refresh(){const data=await jsonp();if(!data.ok)throw Error(data.error||'讀取失敗');people=data.people||[];settings=data.settings||settings;loadSettings();renderCalendar();renderSelected();renderAdmin();return data}
-$('prev').onclick=()=>{viewMonth--;if(viewMonth<0){viewMonth=11;viewYear--}renderCalendar()};
-$('next').onclick=()=>{viewMonth++;if(viewMonth>11){viewMonth=0;viewYear++}renderCalendar()};
-$('clear').onclick=()=>{selected.clear();renderCalendar();renderSelected()};
-$('submit').onclick=async()=>{let name=$('guestName').value.trim(),dates=[...selected].sort();$('guestMessage').innerHTML='';if(!name||!dates.length){$('guestMessage').innerHTML='<div class="error">請輸入姓名並至少選擇一個日期。</div>';return}
- $('submit').disabled=true;try{await send('submit',{name,dates});const saved=people.find(p=>p.name.toLowerCase()===name.toLowerCase());if(!saved||JSON.stringify(saved.dates.slice().sort())!==JSON.stringify(dates))throw Error('尚未確認資料已寫入，請稍後重試');$('guestMessage').innerHTML='<div class="notice">✓ 已成功儲存至共用資料庫！</div>'}catch(e){$('guestMessage').innerHTML=`<div class="error">${escapeHtml(e.message)}</div>`}finally{$('submit').disabled=false}};
-$('saveSettings').onclick=async()=>{let title=$('eventTitle').value.trim(),start=$('startDate').value,end=$('endDate').value,pin=$('adminPin').value;if(!title||!start||!end||start>end||!pin){$('adminMessage').innerHTML='<div class="error">請填寫有效活動設定與管理密碼。</div>';return}try{await send('settings',{title,start,end,pin});if(settings.title!==title||settings.start!==start||settings.end!==end)throw Error('未儲存成功，請檢查管理密碼');$('adminMessage').innerHTML='<div class="notice">活動設定已同步儲存。</div>'}catch(e){$('adminMessage').innerHTML=`<div class="error">${escapeHtml(e.message)}</div>`}};
-$('guestTab').onclick=()=>switchTab('guest');$('adminTab').onclick=()=>switchTab('admin');
-function switchTab(which){$('guestView').classList.toggle('hidden',which!=='guest');$('adminView').classList.toggle('hidden',which!=='admin');$('guestTab').classList.toggle('active',which==='guest');$('adminTab').classList.toggle('active',which==='admin');if(which==='admin')refresh().catch(e=>$('adminMessage').textContent=e.message)}
-$('refresh').onclick=()=>refresh().then(()=>$('adminMessage').innerHTML='<div class="notice">已取得最新資料。</div>').catch(e=>$('adminMessage').textContent=e.message);
-$('export').onclick=()=>{let rows=[['姓名','可出席日期'],...people.map(p=>[p.name,p.dates.join('、')])];let csv='\ufeff'+rows.map(r=>r.map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(',')).join('\r\n');let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));a.download='Gathering-Calendar-統計.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)};
-loadSettings();renderCalendar();renderSelected();refresh().catch(e=>$('guestMessage').innerHTML=`<div class="error">${escapeHtml(e.message)}</div>`);
+const eventId=new URLSearchParams(location.search).get('event');let rankingPeople=[];let settings=null,selected=new Set(),year=new Date().getFullYear(),month=new Date().getMonth();
+function render(){if(!settings)return;$('monthLabel').textContent=`${year} 年 ${month+1} 月`;let h=['日','一','二','三','四','五','六'].map(d=>`<div class="weekday">週${d}</div>`).join('');for(let i=0;i<new Date(year,month,1).getDay();i++)h+='<div></div>';for(let d=1;d<=new Date(year,month+1,0).getDate();d++){const k=key(year,month,d),ok=k>=settings.start&&k<=settings.end;h+=`<button class="day ${selected.has(k)?'selected':''}" data-date="${k}" ${ok?'':'disabled'}><span class="num">${d}</span><span class="sub">星期${'日一二三四五六'[new Date(year,month,d).getDay()]}</span><span class="tick">${selected.has(k)?'✓':''}</span></button>`}$('calendar').innerHTML=h;document.querySelectorAll('[data-date]').forEach(b=>b.onclick=()=>{selected.has(b.dataset.date)?selected.delete(b.dataset.date):selected.add(b.dataset.date);render()});$('selectedCount').textContent=`已選擇 ${selected.size} 個日期`;$('selectedDates').innerHTML=[...selected].sort().map(d=>`<span class="pill">${fmt(d)}</span>`).join('')}
+function renderRanking(people){rankingPeople=Array.isArray(people)?people:[];const status=$('rankingStatus'),root=$('guestRanking');root.replaceChildren();if(!settings){status.textContent='尚未載入活動';return}const counts=new Map();let day=new Date(settings.start+'T12:00:00'),end=new Date(settings.end+'T12:00:00');for(let i=0;day<=end&&i<400;i++,day.setDate(day.getDate()+1)){const d=key(day.getFullYear(),day.getMonth(),day.getDate());counts.set(d,0)}for(const person of rankingPeople){const dates=new Set(Array.isArray(person.dates)?person.dates:[]);for(const d of dates)if(counts.has(d))counts.set(d,counts.get(d)+1)}const ranked=[...counts.entries()].filter(([d,n])=>n>0).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0])).slice(0,10);if(!ranked.length){status.textContent='目前還沒有賓客回覆，歡迎成為第一位！';return}status.textContent=`目前已有 ${rankingPeople.length} 位賓客回覆；同票數依日期先後排序。`;const max=ranked[0][1];for(const [i,[d,n]] of ranked.entries()){const item=document.createElement('div');item.className='rank';const label=document.createElement('span');label.textContent=`${i+1}. ${fmt(d)}`;const track=document.createElement('div');track.className='track';const fill=document.createElement('div');fill.className='fill'+(i===0?' best':'');fill.style.width=(100*n/max)+'%';track.appendChild(fill);const value=document.createElement('b');value.textContent=n+' 人';item.append(label,track,value);root.appendChild(item)}}
+async function refreshRanking(){if(!eventId||!settings)return;const btn=$('refreshRanking');btn.disabled=true;$('rankingStatus').textContent='正在更新排名…';try{const data=await getState(eventId);if(!data.ok||data.selectedEventId!==eventId)throw Error(data.error||'活動資料不一致');renderRanking(data.people||[])}catch(e){$('rankingStatus').textContent='更新失敗：'+e.message}finally{btn.disabled=false}}
+$('refreshRanking').onclick=refreshRanking;
+$('prev').onclick=()=>{if(--month<0){month=11;year--}render()};$('next').onclick=()=>{if(++month>11){month=0;year++}render()};$('clear').onclick=()=>{selected.clear();render()};$('successClose').onclick=()=>{$('successOverlay').classList.add('hidden')};
+async function load(){if(!eventId){$('rankingStatus').textContent='請使用有效活動連結查看排名';$('mainTitle').textContent='請使用主辦人提供的活動專屬連結';$('guestMessage').innerHTML='<div class="error">此網址缺少活動代碼，無法填寫。</div>';return}try{const data=await getState(eventId);if(!data.ok)throw Error(data.error||'讀取失敗');const ev=(data.events||[]).find(e=>e.id===eventId);if(!ev||data.selectedEventId!==eventId)throw Error('活動不存在，請確認連結');settings=data.settings;renderRanking(data.people||[]);$('mainTitle').textContent=ev.title;document.title=ev.title+'｜Gathering Calendar';$('mainDesc').textContent=`可選日期：${fmt(ev.start)} 至 ${fmt(ev.end)}`;if(!ev.active){$('guestMessage').innerHTML='<div class="error">此活動已封存，不再接受回覆。</div>';return}const d=new Date(settings.start+'T12:00:00');year=d.getFullYear();month=d.getMonth();$('submit').disabled=false;render()}catch(e){$('mainTitle').textContent='無法開啟活動';$('guestMessage').innerHTML=`<div class="error">${esc(e.message)}</div>`}}
+$('submit').onclick=async()=>{const name=$('guestName').value.trim(),dates=[...selected].sort();if(!name||!dates.length){$('guestMessage').innerHTML='<div class="error">請輸入姓名並至少選擇一個日期。</div>';return}const btn=$('submit');btn.disabled=true;btn.textContent='正在確認資料…';$('guestMessage').textContent='';try{await post('submit',{eventId,name,dates});let confirmed=false;for(let i=0;i<5;i++){const d=await getState(eventId);const saved=(d.people||[]).find(p=>p.name.toLowerCase()===name.toLowerCase());if(saved&&JSON.stringify([...saved.dates].sort())===JSON.stringify(dates)){confirmed=true;renderRanking(d.people||[]);break}await new Promise(r=>setTimeout(r,900))}if(!confirmed)throw Error('尚未確認資料寫入，請先查看是否已有紀錄，避免重複送出');$('successDescription').textContent=`${name}，您的 ${dates.length} 個可出席日期已成功儲存。謝謝您的回覆！`;$('successOverlay').classList.remove('hidden');$('successClose').focus()}catch(e){$('guestMessage').innerHTML=`<div class="error">${esc(e.message)}</div>`}finally{btn.disabled=false;btn.textContent='確認並送出'}};load();
 </script></body></html>
